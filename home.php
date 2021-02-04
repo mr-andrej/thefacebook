@@ -19,13 +19,42 @@ db_connect();
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>friend requests</h4>
-                    <ul>
-                        <li>
-                            <a href="#">johndoe</a>
-                            <a class="text-success" href="#">[accept]</a>
-                            <a class="text-danger" href="#">[decline]</a>
-                        </li>
-                    </ul>
+                    <?php
+                    $sql = "SELECT * FROM friend_requests WHERE friend_id = {$_SESSION['user_id']}"; // Get all friend requests where the friend_id is equal
+                    $result = $connection->query($sql);                                              // To the ID of the current logged in user
+
+                    if ($result->num_rows > 0) {
+                        ?>
+                        <ul><?php
+
+                        while ($f_request = $result->fetch_assoc()) { // While there are more requests, keep looping
+                            ?>
+                            <li><?php
+
+                            $user_sql = "SELECT * FROM users WHERE id = {$f_request['user_id']} LIMIT 1"; //Getting reults one at a time
+                            $user_result = $connection->query($user_sql);
+                            $fr_user = $user_result->fetch_assoc();
+
+                            ?><a href="profile.php?email=<?php echo $fr_user['email']; ?>">
+                            <?php echo $fr_user['email']; ?>
+                            </a>
+
+                            <a class="text-success" href="php/accept-request.php?uid=<?php echo $fr_user['id']; ?>">
+                                [accept]
+                            </a>
+
+                            <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">
+                                [decline]
+                            </a>
+
+                            </li><?php
+                        }
+
+                        ?></ul><?php
+                    } else {
+                        ?><p class="text-center">No friend requests!</p><?php
+                    }
+                    ?>
                 </div>
             </div>
             <!-- ./friend requests -->
