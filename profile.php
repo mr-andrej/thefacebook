@@ -27,44 +27,65 @@ $statement->fetch();
 <main class="container">
     <div class="row">
         <div class="col-md-3">
+
             <!-- edit profile -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4>Update your profile</h4>
-                    <form method="post" action="php/edit-profile.php">
-                        <label>Status: </label>
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="status" placeholder="Status"
-                                   value="<?php echo $status; ?>">
-                        </div>
-                        <label>Location: </label>
+                    <?php if (!isset($_GET['email'])) { ?>
 
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="location" placeholder="Location"
-                                   value="<?php echo $location; ?>">
-                        </div>
+                        <h4>Update your profile</h4>
+                        <form method="post" action="php/edit-profile.php">
 
-                        <label>Relationship Status: </label>
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="relationship_status"
-                                   placeholder="Relationship Status"
-                                   value="<?php echo isset($relationship_status) ? $relationship_status : ' ';
-                                   ?>">
-                        </div>
+                            <label>Status: </label>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="status" placeholder="Status"
+                                       value="<?php echo $status; ?>">
+                            </div>
 
-                        <label>Profile Photo (URL): </label>
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="profile_image_url"
-                                   placeholder="Relationship Status" value="<?php echo $profile_image_url; ?>">
-                        </div>
-                        <div class="form-group">
-                            <input class="btn btn-primary" type="submit" value="Save">
-                        </div>
-                    </form>
+                            <label>Location: </label>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="location" placeholder="Location"
+                                       value="<?php echo $location; ?>">
+                            </div>
+
+                            <label>Relationship Status: </label>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="relationship_status"
+                                       placeholder="Relationship Status"
+                                       value="<?php echo isset($relationship_status) ? $relationship_status : ' ';
+                                       ?>">
+                            </div>
+
+                            <label>Profile Photo (URL): </label>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="profile_image_url"
+                                       placeholder="Relationship Status" value="<?php echo $profile_image_url; ?>">
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-primary" type="submit" value="Save">
+                            </div>
+                        </form>
+                    <?php } ?>
+
+                    <?php if (isset($_GET['email'])) { ?>
+
+                        <h4>Send <?php $firstname . " " . $lastname ?> a friend request</h4>
+                        <form method="post" action="php/add-friend.php">
+                            <div class="input-group">
+                                    <span class="input-group-btn">
+            <button class="btn btn-primary" type="submit" name="post">Send</button>
+                            </span>
+                            </div>
+                        </form>
+
+                    <?php } ?>
+
+
                 </div>
             </div>
-            <!-- ./edit profile -->
         </div>
+
+        <!-- ./edit profile -->
         <div class="col-md-6">
             <!-- user profile -->
             <div class="media">
@@ -92,14 +113,14 @@ $statement->fetch();
                     <div class="input-group">
                         <input class="form-control" type="text" name="content" placeholder="Make a post…">
                         <span class="input-group-btn">
-            <button class="btn btn-success" type="submit" name="post">Post</button>
+            <button class="btn btn-primary" type="submit" name="post">Post</button>
     </span>
                     </div>
                 </form>
                 <br>
                 <!-- post -->
                 <?php
-                $sql = "SELECT * FROM posts WHERE posts.user_id = {$_SESSION['user_id']} ORDER BY created_at DESC";
+                $sql = "SELECT * FROM posts WHERE posts.user_id = {$id} ORDER BY created_at DESC";
 
                 $result = $connection->query($sql);
 
@@ -108,7 +129,7 @@ $statement->fetch();
                         ?>
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <p><?php echo $post['content']; ?></p>
+                                <p style="width: auto; height-max: 400px;"><?php echo $post['content']; ?></p>
                             </div>
                             <div class="panel-footer">
                                 <span>Posted <?php echo $post['created_at']; ?> by <?php echo $post['firstname']; ?></span>
@@ -129,16 +150,52 @@ $statement->fetch();
             <!-- ./timeline -->
         </div>
         <div class="col-md-3">
+            <!-- add friend -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Send friend request</h4>
+                    <form method="get" action="php/add-friend.php">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="email" placeholder="Enter e-mail">
+                            <span class="input-group-btn">
+            <button class="btn btn-primary" type="submit">Send</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- ./add friend -->
             <!-- friends -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Friends</h4>
-                    <ul>
-                        <li>
-                            <a href="#">peterpan</a>
-                            <a class="text-danger" href="#">[unfriend]</a>
-                        </li>
-                    </ul>
+                    <?php
+                    $sql = "SELECT * FROM friends WHERE friend_id = {$_SESSION['user_id']}";
+
+                    $result = $connection->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        ?>
+                        <ul><?php
+                        while ($friend = $result->fetch_assoc()) {
+                            ?>
+                            <li>
+                                <?php
+                                $u_sql = "SELECT * FROM users WHERE id = {$friend['user_id']} LIMIT 1";
+                                $u_result = $connection->query($u_sql);
+                                $fr_user = $u_result->fetch_assoc();
+                                ?>
+                                <a href="profile.php?email=<?php echo $fr_user['email']; ?>"><?php echo $fr_user['firstname'] . " " . $fr_user['lastname']; ?></a>
+                                <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">[unfriend]</a>
+                            </li>
+                            <?php
+                        } ?></ul><?php
+                    } else {
+                        ?>
+                        <p class="text-center">No pending friend requests!</p>
+                        <?php
+                    }
+                    ?>
                 </div>
             </div>
             <!-- ./friends -->
@@ -162,7 +219,7 @@ $statement->fetch();
                                 $u_result = $connection->query($u_sql);
                                 $fr_user = $u_result->fetch_assoc();
                                 ?>
-                                <a href="profile.php?email=<?php echo $fr_user['email']; ?>"><?php echo $fr_user['email']; ?></a>
+                                <a href="profile.php?email=<?php echo $fr_user['email']; ?>"><?php echo $fr_user['firstname'] . " " . $fr_user['lastname']; ?></a>
                                 <a class="text-success" href="php/accept-request.php?uid=<?php echo $fr_user['id']; ?>">[accept]</a>
                                 <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">[decline]</a>
                             </li>

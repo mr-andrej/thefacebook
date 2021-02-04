@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="icon"
           type="image/png"
-          href="/img/favicon.png" />
+          href="/img/favicon.png"/>
 </head>
 <body>
 
