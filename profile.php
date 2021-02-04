@@ -5,15 +5,24 @@ require_once "_functions.php";
 check_auth();
 db_connect();
 
-$sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
+if (isset($_GET['email']))
+    $sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE email = ?";
+else
+    $sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
 
 $statement = $connection->prepare($sql);
-$statement->bind_param('s', $_SESSION['user_id']);
+
+if (isset($_GET['email']))
+    $statement->bind_param('s', $_GET['email']);
+else
+    $statement->bind_param('s', $_SESSION['user_id']);
+
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
 $statement->fetch();
 ?>
+<title> [thefacebook] - <?php echo $firstname . " " . $lastname; ?></title>
 <!-- main -->
 <main class="container">
     <div class="row">
@@ -25,23 +34,28 @@ $statement->fetch();
                     <form method="post" action="php/edit-profile.php">
                         <label>Status: </label>
                         <div class="form-group">
-                            <input class="form-control" type="text" name="status" placeholder="Status" value="<?php echo $status; ?>">
+                            <input class="form-control" type="text" name="status" placeholder="Status"
+                                   value="<?php echo $status; ?>">
                         </div>
                         <label>Location: </label>
 
                         <div class="form-group">
-                            <input class="form-control" type="text" name="location" placeholder="Location" value="<?php echo $location; ?>">
+                            <input class="form-control" type="text" name="location" placeholder="Location"
+                                   value="<?php echo $location; ?>">
                         </div>
 
                         <label>Relationship Status: </label>
                         <div class="form-group">
-                            <input class="form-control" type="text" name="relationship_status" placeholder="Relationship Status" value="<?php echo isset($relationship_status) ? $relationship_status : ' ';
-                            ?>">
+                            <input class="form-control" type="text" name="relationship_status"
+                                   placeholder="Relationship Status"
+                                   value="<?php echo isset($relationship_status) ? $relationship_status : ' ';
+                                   ?>">
                         </div>
 
                         <label>Profile Photo (URL): </label>
                         <div class="form-group">
-                            <input class="form-control" type="text" name="profile_image_url" placeholder="Relationship Status" value="<?php echo $profile_image_url; ?>">
+                            <input class="form-control" type="text" name="profile_image_url"
+                                   placeholder="Relationship Status" value="<?php echo $profile_image_url; ?>">
                         </div>
                         <div class="form-group">
                             <input class="btn btn-primary" type="submit" value="Save">
@@ -55,7 +69,8 @@ $statement->fetch();
             <!-- user profile -->
             <div class="media">
                 <div class="media-left">
-                    <img src="<?php echo $profile_image_url; ?>" class="media-object" style="width: auto; height: 128px;">
+                    <img src="<?php echo $profile_image_url; ?>" class="media-object"
+                         style="width: auto; height: 128px;">
                 </div>
                 <div class="media-body">
                     <h2 class="media-heading"><?php echo $firstname . " " . $lastname; ?></h2>
