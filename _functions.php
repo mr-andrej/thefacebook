@@ -33,3 +33,5 @@ function check_auth()
     if (!is_auth())
         redirect_to("/index.php?logged_in=false");
 }
+
+
