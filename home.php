@@ -3,6 +3,15 @@
 
 check_auth();
 db_connect();
+
+$sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
+
+$statement = $connection->prepare($sql);
+$statement->bind_param('s', $_SESSION['user_id']);
+$statement->execute();
+$statement->store_result();
+$statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
+$statement->fetch();
 ?>
 <!-- main -->
 <main class="container">
@@ -19,18 +28,20 @@ db_connect();
 
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4>friend requests</h4>
+                    <h4>Pending Friend Requests</h4>
                     <?php
                     $sql = "SELECT * FROM friend_requests WHERE friend_id = {$_SESSION['user_id']}";
+
                     $result = $connection->query($sql);
 
                     if ($result->num_rows > 0) {
-                        ?><ul><?php
-                        while($f_request = $result->fetch_assoc()) {
+                        ?>
+                        <ul><?php
+                        while ($friend = $result->fetch_assoc()) {
                             ?>
                             <li>
                                 <?php
-                                $u_sql = "SELECT * FROM users WHERE id = {$f_request['user_id']} LIMIT 1";
+                                $u_sql = "SELECT * FROM users WHERE id = {$friend['user_id']} LIMIT 1";
                                 $u_result = $connection->query($u_sql);
                                 $fr_user = $u_result->fetch_assoc();
                                 ?>
@@ -42,7 +53,7 @@ db_connect();
                         } ?></ul><?php
                     } else {
                         ?>
-                        <p class="text-center">No friend requests!</p>
+                        <p class="text-center">No pending friend requests!</p>
                         <?php
                     }
                     ?>
@@ -78,7 +89,7 @@ db_connect();
                                 <p><?php echo $post['content']; ?></p>
                             </div>
                             <div class="panel-footer">
-                                <span>posted <?php echo $post['created_at']; ?> by nicholaskajoh</span>
+                                <span>Posted <?php echo $post['created_at']; ?> by <?php echo $post['firstname']; ?></span>
                                 <span class="pull-right"><a class="text-danger"
                                                             href="php/delete-post.php?id=<?php echo $post['id']; ?>">[delete]</a></span>
                             </div>
@@ -100,28 +111,33 @@ db_connect();
             <!-- add friend -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4>add friend</h4>
+                    <h4>Search by email</h4>
                     <?php
-                    $sql = "SELECT id, email, (SELECT COUNT(*) FROM friends WHERE friends.user_id = users.id AND friends.friend_id = {$_SESSION['user_id']}) AS is_friend FROM users WHERE id != {$_SESSION['user_id']} HAVING is_friend = 0";
-                    $result = $connection->query($sql);
+                    $sql = "SELECT id, username, (SELECT COUNT(*) FROM friends WHERE friends.user_id = users.id AND friends.friend_id = 
+                                                                                        {$_SESSION['user_id']}) AS is_friend FROM users WHERE id != 
+                                                                                       {$_SESSION['user_id']} HAVING is_friend = 0";
 
-                    if ($result->num_rows > 0) {
-                        ?><ul><?php
-                        while($fc_user = $result->fetch_assoc()) {
+
+                    if ($result = $connection->query($sql)) {
+                        if ($result->num_rows > 0) {
                             ?>
-                            <li>
-                                <a href="profile.php?email=<?php echo $fc_user['email']; ?>">
-                                    <?php echo $fc_user['email']; ?>
-                                </a>
-                                <a href="php/add-friend.php?uid=<?php echo $fc_user['id']; ?>">[add]</a>
-                            </li>
+                            <ul><?php
+                            while ($fc_user = $result->fetch_assoc()) {
+                                ?>
+                                <li>
+                                    <a href="profile.php?email=<?php echo $fc_user['email']; ?>">
+                                        <?php echo $fc_user['email']; ?>
+                                    </a>
+                                    <a href="php/add-friend.php?uid=<?php echo $fc_user['id']; ?>">[add]</a>
+                                </li>
+                                <?php
+                            }
+                            ?></ul><?php
+                        } else {
+                            ?>
+                            <p class="text-center">No users to add!</p>
                             <?php
                         }
-                        ?></ul><?php
-                    } else {
-                        ?>
-                        <p class="text-center">No users to add!</p>
-                        <?php
                     }
                     ?>
                 </div>
@@ -132,12 +148,34 @@ db_connect();
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>friends</h4>
-                    <ul>
-                        <li>
-                            <a href="#">peterpan</a>
-                            <a class="text-danger" href="php/unfriend.php">[unfriend]</a>
-                        </li>
-                    </ul>
+                    <?php
+                    $sql = "SELECT * FROM friends WHERE friend_id = {$_SESSION['user_id']}";
+
+                    $result = $connection->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        ?>
+                        <ul><?php
+                        while ($friend = $result->fetch_assoc()) {
+                            ?>
+                            <li>
+                                <?php
+                                $u_sql = "SELECT * FROM users WHERE id = {$friend['id']} LIMIT 1";
+                                $u_result = $connection->query($u_sql);
+                                $fr_user = $u_result->fetch_assoc();
+                                ?>
+                                <a class="text-danger"
+                                   href="unfriend.php?uid=" <?php echo $friend['id']; ?>>[unfriend]</a>
+
+                            </li>
+                            <?php
+                        } ?></ul><?php
+                    } else {
+                        ?>
+                        <p class="text-center">No pending friend requests!</p>
+                        <?php
+                    }
+                    ?>
                 </div>
             </div>
             <!-- ./friends -->

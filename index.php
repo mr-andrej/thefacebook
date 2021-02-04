@@ -19,7 +19,7 @@ db_connect();
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.php">[thefacebook]</a>
+            <a class="navbar-brand" href="index.php"><strong>[thefacebook]</strong></a>
         </div>
     </div>
 </nav>
@@ -27,7 +27,7 @@ db_connect();
 
 <!-- main -->
 <main class="container">
-    <h1 class="text-center">Welcome to [thefacebook]! <br><br></h1>
+    <h1 class="text-center">Welcome to <strong>[thefacebook]</strong> <br><br></h1>
     <?php if(isset($_GET['registered'])): ?>
         <div class="alert alert-success">
             <p>Account created successfully! Use your email and password to login.</p>
@@ -91,13 +91,8 @@ db_connect();
 </main>
 <!-- ./main -->
 
-<!-- footer -->
-<footer class="container text-center">
-    <ul class="nav nav-pills pull-right">
-        <li>[thefacebook] - Made by Andrej Ilievski</li>
-    </ul>
-</footer>
-<!-- ./footer -->
+<?php include "_footer.php" ?>
+
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
 </body>

@@ -2,15 +2,16 @@
 include "_header.php";
 require_once "_functions.php";
 
+check_auth();
 db_connect();
 
-$sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE email = ?";
+$sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
 
 $statement = $connection->prepare($sql);
-$statement->bind_param('s', $_GET['email']);
+$statement->bind_param('s', $_SESSION['user_id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($id, $emaiil, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
+$statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
 $statement->fetch();
 ?>
 <!-- main -->
@@ -20,13 +21,27 @@ $statement->fetch();
             <!-- edit profile -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4>Edit profile</h4>
+                    <h4>Update your profile</h4>
                     <form method="post" action="php/edit-profile.php">
+                        <label>Status: </label>
                         <div class="form-group">
-                            <input class="form-control" type="text" name="status" placeholder="Status" value="">
+                            <input class="form-control" type="text" name="status" placeholder="Status" value="<?php echo $status; ?>">
                         </div>
+                        <label>Location: </label>
+
                         <div class="form-group">
-                            <input class="form-control" type="text" name="location" placeholder="Location" value="">
+                            <input class="form-control" type="text" name="location" placeholder="Location" value="<?php echo $location; ?>">
+                        </div>
+
+                        <label>Relationship Status: </label>
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="relationship_status" placeholder="Relationship Status" value="<?php echo isset($relationship_status) ? $relationship_status : ' ';
+                            ?>">
+                        </div>
+
+                        <label>Profile Photo (URL): </label>
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="profile_image_url" placeholder="Relationship Status" value="<?php echo $profile_image_url; ?>">
                         </div>
                         <div class="form-group">
                             <input class="btn btn-primary" type="submit" value="Save">
@@ -40,11 +55,16 @@ $statement->fetch();
             <!-- user profile -->
             <div class="media">
                 <div class="media-left">
-                    <img src="img/my_avatar.png" class="media-object" style="width: 128px; height: 128px;">
+                    <img src="<?php echo $profile_image_url; ?>" class="media-object" style="width: auto; height: 128px;">
                 </div>
                 <div class="media-body">
-                    <h2 class="media-heading">nicholaskajoh</h2>
-                    <p>Status: I love to code!, Location: Nigeria</p>
+                    <h2 class="media-heading"><?php echo $firstname . " " . $lastname; ?></h2>
+                    <p>Status: <?php echo $status; ?>
+                        <br> Relationship Status: <?php echo $relationship_status; ?>
+                        <br> Location: <?php echo $location; ?>
+
+                    </p>
+
                 </div>
             </div>
             <!-- user profile -->
@@ -53,10 +73,20 @@ $statement->fetch();
 
             <!-- timeline -->
             <div>
+                <form method="post" action="php/create-post.php?from=profile">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="content" placeholder="Make a post…">
+                        <span class="input-group-btn">
+            <button class="btn btn-success" type="submit" name="post">Post</button>
+    </span>
+                    </div>
+                </form>
+                <br>
                 <!-- post -->
                 <?php
-                $posts_sql = "SELECT * FROM posts WHERE user_id = {$id} ORDER BY created_at DESC";
-                $result = $connection->query($posts_sql);
+                $sql = "SELECT * FROM posts WHERE posts.user_id = {$_SESSION['user_id']} ORDER BY created_at DESC";
+
+                $result = $connection->query($sql);
 
                 if ($result->num_rows > 0) {
                     while ($post = $result->fetch_assoc()) {
@@ -66,22 +96,9 @@ $statement->fetch();
                                 <p><?php echo $post['content']; ?></p>
                             </div>
                             <div class="panel-footer">
-                                <?php
-                                $sql = "SELECT email FROM users WHERE id = ? LIMIT 1";
-
-                                $statement = $connection->prepare($sql);
-                                $statement->bind_param('i', $post['user_id']);
-                                $statement->execute();
-                                $statement->store_result();
-                                $statement->bind_result($post_author);
-                                $statement->fetch();
-                                ?>
-
-                                <span>posted <?php echo $post['created_at']; ?></span>
-                                <?php if (is_auth() && $_SESSION['user_id'] == $id): ?>
-                                    <span class="pull-right"><a class="text-danger"
-                                                                href="php/delete-post.php?id=<?php echo $post['id']; ?>">[delete]</a></span>
-                                <?php endif; ?>
+                                <span>Posted <?php echo $post['created_at']; ?> by <?php echo $post['firstname']; ?></span>
+                                <span class="pull-right"><a class="text-danger"
+                                                            href="php/delete-post.php?id=<?php echo $post['id']; ?>&from=profile">[delete]</a></span>
                             </div>
                         </div>
                         <?php
@@ -110,6 +127,40 @@ $statement->fetch();
                 </div>
             </div>
             <!-- ./friends -->
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Pending Friend Requests</h4>
+                    <?php
+                    $sql = "SELECT * FROM friend_requests WHERE friend_id = {$_SESSION['user_id']}";
+
+                    $result = $connection->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        ?>
+                        <ul><?php
+                        while ($friend = $result->fetch_assoc()) {
+                            ?>
+                            <li>
+                                <?php
+                                $u_sql = "SELECT * FROM users WHERE id = {$friend['user_id']} LIMIT 1";
+                                $u_result = $connection->query($u_sql);
+                                $fr_user = $u_result->fetch_assoc();
+                                ?>
+                                <a href="profile.php?email=<?php echo $fr_user['email']; ?>"><?php echo $fr_user['email']; ?></a>
+                                <a class="text-success" href="php/accept-request.php?uid=<?php echo $fr_user['id']; ?>">[accept]</a>
+                                <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">[decline]</a>
+                            </li>
+                            <?php
+                        } ?></ul><?php
+                    } else {
+                        ?>
+                        <p class="text-center">No pending friend requests!</p>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
 </main>
