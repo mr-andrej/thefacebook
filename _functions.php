@@ -6,7 +6,7 @@ function db_connect()
     global $connection;
 
     $db_server = "localhost";
-    $username = "root";
+    $username = "mrandrej";
     $password = "password";
     $db_name = "theFacebookDB";
 
