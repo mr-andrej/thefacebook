@@ -11,5 +11,5 @@ $statement->bind_param('iiii', $_GET['uid'], $_SESSION['user_id'], $_SESSION['us
 
 if ($statement->execute())
     redirect_to("/profile.php?email=" . $_SESSION['user_email']);
- else
+else
     echo "Error: " . $connection->error;

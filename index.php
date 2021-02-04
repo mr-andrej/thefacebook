@@ -11,7 +11,7 @@ db_connect();
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="icon"
           type="image/png"
-          href="/img/favicon.png" />
+          href="/img/favicon.png"/>
 </head>
 <body>
 
@@ -28,14 +28,14 @@ db_connect();
 <!-- main -->
 <main class="container">
     <h1 class="text-center">Welcome to <strong>[thefacebook]</strong> <br><br></h1>
-    <?php if(isset($_GET['registered'])): ?>
+    <?php if (isset($_GET['registered'])): ?>
         <div class="alert alert-success">
             <p>Account created successfully! Use your email and password to login.</p>
         </div>
     <?php endif; ?>
 
     <div class="row">
-        <div class="col-md-6">        <br>
+        <div class="col-md-6"><br>
 
             <h4>Login to start enjoying unlimited fun!</h4>
 

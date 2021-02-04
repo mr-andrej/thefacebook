@@ -1,34 +1,39 @@
 /* styles */
 
 a {
-  color: #3b5998;
+    color: #3b5998;
 }
 
 .navbar {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 .navbar-default {
-  background-color: #3b5998;
-  border-color: #3b5998;
+    background-color: #3b5998;
+    border-color: #3b5998;
 }
 
 .navbar-default .navbar-brand {
-  color: #fff;
+    color: #fff;
 }
 
 .navbar-default .navbar-brand:focus,
 .navbar-default .navbar-brand:hover {
-  color: #fff;
+    color: #fff;
 }
 
-.navbar-default .navbar-nav>li>a {
-  color: #fff;
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
 }
 
-.navbar-default .navbar-nav>li>a:focus,
-.navbar-default .navbar-nav>li>a:hover {
-  color: #fff;
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover {
+    color: #fff;
+}
+
+.panel-body {
+    height: auto;
+    width: 100%;
 }

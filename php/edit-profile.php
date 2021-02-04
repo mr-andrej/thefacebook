@@ -12,6 +12,6 @@ $statement->bind_param('ssssi', $_POST['status'], $_POST['location'], $_POST['re
 
 if ($statement->execute())
     redirect_to("/profile.php?email={$_SESSION['user_email']}");
- else
+else
     echo "Error: " . $connection->error;
 

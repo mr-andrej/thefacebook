@@ -13,7 +13,8 @@ if ($statement->execute()) {
     if ($_GET['from'] === 'profile')
         redirect_to("/profile.php");
     else
-        redirect_to("/home.php");} else {
+        redirect_to("/home.php");
+} else {
     echo "Error: " . $connection->error;
 }
 $connection->close();
