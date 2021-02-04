@@ -11,7 +11,7 @@ $statement = $connection->prepare($sql);
 $statement->bind_param('sssi', $_POST['status'], $_POST['location'], $_POST['relationship_status'], $_SESSION['user_id']);
 
 if ($statement->execute())
-    redirect_to("/profile.php?username={$_SESSION['user_username']}");
+    redirect_to("/profile.php?email={$_SESSION['user_email']}");
  else
     echo "Error: " . $connection->error;
 

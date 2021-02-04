@@ -1,5 +1,7 @@
 <?php include "_header.php" ?>
 <?php require_once "_functions.php";
+
+check_auth();
 db_connect();
 ?>
 <!-- main -->
@@ -15,49 +17,37 @@ db_connect();
             </div>
             <!-- ./profile brief -->
 
-            <!-- friend requests -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>friend requests</h4>
                     <?php
-                    $sql = "SELECT * FROM friend_requests WHERE friend_id = {$_SESSION['user_id']}"; // Get all friend requests where the friend_id is equal
-                    $result = $connection->query($sql);                                              // To the ID of the current logged in user
+                    $sql = "SELECT * FROM friend_requests WHERE friend_id = {$_SESSION['user_id']}";
+                    $result = $connection->query($sql);
 
                     if ($result->num_rows > 0) {
-                        ?>
-                        <ul><?php
-
-                        while ($f_request = $result->fetch_assoc()) { // While there are more requests, keep looping
+                        ?><ul><?php
+                        while($f_request = $result->fetch_assoc()) {
                             ?>
-                            <li><?php
-
-                            $user_sql = "SELECT * FROM users WHERE id = {$f_request['user_id']} LIMIT 1"; //Getting reults one at a time
-                            $user_result = $connection->query($user_sql);
-                            $fr_user = $user_result->fetch_assoc();
-
-                            ?><a href="profile.php?email=<?php echo $fr_user['email']; ?>">
-                            <?php echo $fr_user['email']; ?>
-                            </a>
-
-                            <a class="text-success" href="php/accept-request.php?uid=<?php echo $fr_user['id']; ?>">
-                                [accept]
-                            </a>
-
-                            <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">
-                                [decline]
-                            </a>
-
-                            </li><?php
-                        }
-
-                        ?></ul><?php
+                            <li>
+                                <?php
+                                $u_sql = "SELECT * FROM users WHERE id = {$f_request['user_id']} LIMIT 1";
+                                $u_result = $connection->query($u_sql);
+                                $fr_user = $u_result->fetch_assoc();
+                                ?>
+                                <a href="profile.php?email=<?php echo $fr_user['email']; ?>"><?php echo $fr_user['email']; ?></a>
+                                <a class="text-success" href="php/accept-request.php?uid=<?php echo $fr_user['id']; ?>">[accept]</a>
+                                <a class="text-danger" href="php/remove-request.php?uid=<?php echo $fr_user['id']; ?>">[decline]</a>
+                            </li>
+                            <?php
+                        } ?></ul><?php
                     } else {
-                        ?><p class="text-center">No friend requests!</p><?php
+                        ?>
+                        <p class="text-center">No friend requests!</p>
+                        <?php
                     }
                     ?>
                 </div>
             </div>
-            <!-- ./friend requests -->
         </div>
         <div class="col-md-6">
             <!-- post form -->
@@ -112,28 +102,26 @@ db_connect();
                 <div class="panel-body">
                     <h4>add friend</h4>
                     <?php
-                    $sql = "SELECT id, email, (SELECT COUNT(*) FROM friends WHERE friends.user_id = users.id 
-                                    AND friends.friend_id = {$_SESSION['user_id']}) AS is_friend FROM users 
-                                    WHERE id != {$_SESSION['user_id']} HAVING is_friend = 0";
+                    $sql = "SELECT id, email, (SELECT COUNT(*) FROM friends WHERE friends.user_id = users.id AND friends.friend_id = {$_SESSION['user_id']}) AS is_friend FROM users WHERE id != {$_SESSION['user_id']} HAVING is_friend = 0";
                     $result = $connection->query($sql);
 
                     if ($result->num_rows > 0) {
-                        ?>
-                        <ul><?php
-
-                        while ($fc_user = $result->fetch_assoc()) {
+                        ?><ul><?php
+                        while($fc_user = $result->fetch_assoc()) {
                             ?>
                             <li>
-                            <a href="profile.php?email=<?php echo $fc_user['email']; ?>">
-                                <?php echo $fc_user['email']; ?>
-                            </a>
-                            <a href="php/add-friend.php?uid=<?php echo $fc_user['id']; ?>">[add]</a>
-                            </li><?php
+                                <a href="profile.php?email=<?php echo $fc_user['email']; ?>">
+                                    <?php echo $fc_user['email']; ?>
+                                </a>
+                                <a href="php/add-friend.php?uid=<?php echo $fc_user['id']; ?>">[add]</a>
+                            </li>
+                            <?php
                         }
-
                         ?></ul><?php
                     } else {
-                        ?><p class="text-center">No users to add!</p><?php
+                        ?>
+                        <p class="text-center">No users to add!</p>
+                        <?php
                     }
                     ?>
                 </div>
@@ -147,7 +135,7 @@ db_connect();
                     <ul>
                         <li>
                             <a href="#">peterpan</a>
-                            <a class="text-danger" href="#">[unfriend]</a>
+                            <a class="text-danger" href="php/unfriend.php">[unfriend]</a>
                         </li>
                     </ul>
                 </div>
