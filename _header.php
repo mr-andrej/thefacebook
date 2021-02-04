@@ -14,7 +14,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.php">[thefacebook]</a>
+            <a class="navbar-brand" href="home.php"><strong>[thefacebook]</strong></a>
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="home.php">Home</a></li>

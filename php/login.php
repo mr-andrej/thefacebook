@@ -16,9 +16,11 @@ if ($statement->execute()) {
     if (password_verify($_POST['password'], $password)) {
         $_SESSION['user_id'] = $id;
         $_SESSION['user_email'] = $email;
+        $_SESSION['firstname'] = $firstname;
         redirect_to("/home.php");
-    } else
+    } else {
         redirect_to("/index.php?login_error=true");
-} else
+    }
+} else {
     echo "Error: " . $connection->error;
-
+}
