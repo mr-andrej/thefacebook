@@ -17,4 +17,3 @@ if ($statement->execute()) {
 } else {
     echo "Error: " . $connection->error;
 }
-$connection->close();
