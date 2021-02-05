@@ -90,11 +90,11 @@ $statement->fetch();
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Send friend request</h4>
-                    <form method="post" action="php/add-friend.php">
+                    <form method="get" action="php/add-friend.php">
                         <div class="input-group">
                             <input class="form-control" type="text" name="email" placeholder="Enter e-mail">
                             <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit" name="post">Send</button>
+            <button class="btn btn-primary" type="submit">Send</button>
                             </span>
                         </div>
                     </form>
