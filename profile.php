@@ -22,6 +22,9 @@ $statement->store_result();
 $statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
 $statement->fetch();
 
+if (!isset($id)) // In case the email isn't in the db
+    redirect_to("/home.php");
+
 ?>
 <!-- main -->
 <main class="container">
