@@ -15,7 +15,7 @@ db_connect();
 </head>
 <body>
 
-<!-- nav -->
+<!-- Nav -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -23,9 +23,9 @@ db_connect();
         </div>
     </div>
 </nav>
-<!-- ./nav -->
+<!-- ./Nav -->
 
-<!-- main -->
+<!-- Main -->
 <main class="container">
     <h1 class="text-center">Welcome to <strong>[thefacebook]</strong> <br><br></h1>
     <?php if (isset($_GET['registered'])): ?>
@@ -39,7 +39,7 @@ db_connect();
 
             <h4>Login to start enjoying unlimited fun!</h4>
 
-            <!-- login form -->
+            <!-- Login form -->
             <form method="post" action="php/login.php">
                 <div class="form-group">
                     <input class="form-control" type="text" name="email" placeholder="E-mail">
@@ -53,13 +53,13 @@ db_connect();
                     <input class="btn btn-primary" type="submit" name="login" value="Login">
                 </div>
             </form>
-            <!-- ./login form -->
+            <!-- ./Login form -->
         </div>
         <br>
         <div class="col-md-6">
             <h4>Don't have an account yet? Register!</h4>
             <!-- TODO: Copy the style of the original TheFacebook index page -->
-            <!-- register form -->
+            <!-- Register form -->
             <form method="post" action="php/register.php">
                 <div class="form-group">
                     <input class="form-control" type="text" name="email" placeholder="E-mail">
@@ -85,11 +85,11 @@ db_connect();
                     <input class="btn btn-success" type="submit" name="register" value="Register">
                 </div>
             </form>
-            <!-- ./register form -->
+            <!-- ./Register form -->
         </div>
     </div>
 </main>
-<!-- ./main -->
+<!-- ./Main -->
 
 <?php include "_footer.php" ?>
 
