@@ -26,7 +26,7 @@ if (!isset($id)) // In case the email isn't in the db
     redirect_to("/home.php");
 
 ?>
-<!-- main -->
+<!-- Main -->
 <main class="container">
     <div class="row">
         <div class="col-md-3">
@@ -89,9 +89,9 @@ if (!isset($id)) // In case the email isn't in the db
             </div>
         </div>
 
-        <!-- ./edit profile -->
+        <!-- ./Edit profile -->
         <div class="col-md-6">
-            <!-- user profile -->
+            <!-- User profile -->
             <div class="media">
                 <div class="media-left">
                     <img src="<?php echo $profile_image_url; ?>" class="media-object"
@@ -107,11 +107,11 @@ if (!isset($id)) // In case the email isn't in the db
 
                 </div>
             </div>
-            <!-- user profile -->
+            <!-- User profile -->
 
             <hr>
 
-            <!-- timeline -->
+            <!-- Timeline -->
             <div>
                 <form method="post" action="php/create-post.php?from=profile">
                     <div class="input-group">
@@ -122,7 +122,7 @@ if (!isset($id)) // In case the email isn't in the db
                     </div>
                 </form>
                 <br>
-                <!-- post -->
+                <!-- Post -->
                 <?php
                 $sql = "SELECT * FROM posts WHERE posts.user_id = {$id} ORDER BY created_at DESC";
 
@@ -149,12 +149,12 @@ if (!isset($id)) // In case the email isn't in the db
                     <?php
                 }
                 ?>
-                <!-- ./post -->
+                <!-- ./Post -->
             </div>
-            <!-- ./timeline -->
+            <!-- ./Timeline -->
         </div>
         <div class="col-md-3">
-            <!-- add friend -->
+            <!-- Add friend -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Send friend request</h4>
@@ -168,8 +168,8 @@ if (!isset($id)) // In case the email isn't in the db
                     </form>
                 </div>
             </div>
-            <!-- ./add friend -->
-            <!-- friends -->
+            <!-- ./Add friend -->
+            <!-- Friends -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Friends</h4>
@@ -202,7 +202,7 @@ if (!isset($id)) // In case the email isn't in the db
                     ?>
                 </div>
             </div>
-            <!-- ./friends -->
+            <!-- ./Friends -->
 
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -240,7 +240,7 @@ if (!isset($id)) // In case the email isn't in the db
         </div>
     </div>
 </main>
-<!-- ./main -->
+<!-- ./Main -->
 
 <?php include "_footer.php" ?>
 

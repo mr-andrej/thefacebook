@@ -4,28 +4,20 @@
 check_auth();
 db_connect();
 
-if (isset($_GET['email']))
-    $sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE email = ?";
-else
-    $sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
+$sql = "SELECT id, email, firstname, lastname, status, relationship_status, profile_image_url, location FROM users WHERE id = ?";
 
-$statement = $connection->prepare($sql);
-
-if (isset($_GET['email']))
-    $statement->bind_param('s', $_GET['email']);
-else
-    $statement->bind_param('s', $_SESSION['user_id']);
-
+$statement = $connection->prepare($sql); // Get the info of the current user
+$statement->bind_param('s', $_SESSION['user_id']);
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
 $statement->fetch();
 ?>
-<!-- main -->
+<!-- Main -->
 <main class="container">
     <div class="row">
         <div class="col-md-3">
-            <!-- profile brief -->
+            <!-- Profile brief -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4><?php echo $firstname . " " . $lastname; ?></h4>
@@ -35,12 +27,12 @@ $statement->fetch();
                     </div>
                 </div>
             </div>
-            <!-- ./profile brief -->
+            <!-- ./Profile brief -->
 
 
         </div>
         <div class="col-md-6">
-            <!-- post form -->
+            <!-- Post form -->
             <form method="post" action="php/create-post.php">
                 <div class="input-group">
                     <input class="form-control" type="text" name="content" placeholder="Make a post…">
@@ -50,11 +42,11 @@ $statement->fetch();
                 </div>
             </form>
             <hr>
-            <!-- ./post form -->
+            <!-- ./Post form -->
 
-            <!-- feed -->
+            <!-- Feed -->
             <div>
-                <!-- post -->
+                <!-- Post -->
                 <?php
                 $sql = "SELECT * FROM posts ORDER BY created_at DESC";
 
@@ -81,12 +73,12 @@ $statement->fetch();
                     <?php
                 }
                 ?>
-                <!-- ./post -->
+                <!-- ./Post -->
             </div>
-            <!-- ./feed -->
+            <!-- ./Feed -->
         </div>
         <div class="col-md-3">
-            <!-- add friend -->
+            <!-- Add friend -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Send friend request</h4>
@@ -100,9 +92,9 @@ $statement->fetch();
                     </form>
                 </div>
             </div>
-            <!-- ./add friend -->
+            <!-- ./Add friend -->
 
-            <!-- friends -->
+            <!-- Friends -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Friends</h4>
@@ -135,7 +127,7 @@ $statement->fetch();
                     ?>
                 </div>
             </div>
-            <!-- ./friends -->
+            <!-- ./Friends -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Pending Friend Requests</h4>
@@ -172,7 +164,7 @@ $statement->fetch();
         </div>
     </div>
 </main>
-<!-- ./main -->
+<!-- ./Main -->
 <?php include "_footer.php" ?>
 
 
