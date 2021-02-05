@@ -10,8 +10,10 @@ $statement = $connection->prepare($sql);
 $statement->bind_param('i', $_GET['id']);
 
 if ($statement->execute()) {
-    redirect_to("/home.php");
+    if ($_GET['from'] === 'profile')
+        redirect_to("/profile.php");
+    else
+        redirect_to("/home.php");
 } else {
     echo "Error: " . $connection->error;
 }
-$connection->close();
