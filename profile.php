@@ -21,8 +21,8 @@ $statement->execute();
 $statement->store_result();
 $statement->bind_result($id, $email, $firstname, $lastname, $status, $relationship_status, $profile_image_url, $location);
 $statement->fetch();
+
 ?>
-<title> [thefacebook] - <?php echo $firstname . " " . $lastname; ?></title>
 <!-- main -->
 <main class="container">
     <div class="row">
@@ -69,12 +69,13 @@ $statement->fetch();
 
                     <?php if (isset($_GET['email'])) { ?>
 
-                        <h4>Send <?php $firstname . " " . $lastname ?> a friend request</h4>
-                        <form method="post" action="php/add-friend.php">
+                        <h4>Send <?php echo $firstname . " " . $lastname; ?> a friend request</h4>
+                        <form method="get" action="php/add-friend.php">
+                            <input class="form-control" type="hidden" name="email" value="<?php echo $email;?>">
                             <div class="input-group">
-                                    <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit" name="post">Send</button>
-                            </span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit" name="post">Send</button>
+                                </span>
                             </div>
                         </form>
 
